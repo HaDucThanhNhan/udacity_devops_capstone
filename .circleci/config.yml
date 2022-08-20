@@ -74,6 +74,7 @@ jobs:
       - run:
           name: Run eks create cluster
           command: |
+            chmod -R +x ./bin/
             source .devops/bin/activate
             make eks-create-cluster
 
