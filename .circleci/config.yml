@@ -101,20 +101,6 @@ jobs:
             docker push ${DOCKER_HUB_ID}/${DOCKER_REPOSITORY}:${VERSION}
             docker push ${DOCKER_HUB_ID}/${DOCKER_REPOSITORY}:lastest
 
-  create-eks-infra:
-    docker:
-    - image: cimg/python:3.7.13
-    steps:
-      - checkout
-      - install-awscli-gettext
-      - install-aws-iam-authenticator
-      - install-eks
-      - install-kubectl
-      - run: 
-          name: Create infra eks
-          command: |
-           eksctl create cluster -f infa/cluster.yaml          
-
   deploy-green:
     docker:
       - image: cimg/python:3.7.13
@@ -216,10 +202,8 @@ workflows:
       - run-lint
       - build-and-push-docker-image:
           requires: [run-lint]
-      - create-eks-infra:
-          requires: [run-lint]  
       - deploy-green:
-          requires: [create-eks-infra, build-and-push-docker-image]
+          requires: [build-and-push-docker-image]
       - wait-manual-approval:
           type: approval
           requires: [deploy-green]
