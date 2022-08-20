@@ -208,7 +208,7 @@ workflows:
       - create-eks-infra:
           requires: [run-lint]  
       - deploy-green:
-          requires: [build-and-push-docker-image]
+          requires: [create-eks-infra, build-and-push-docker-image]
       - wait-manual-approval:
           type: approval
           requires: [deploy-green]
