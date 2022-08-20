@@ -36,7 +36,7 @@ commands:
             sudo mv ./kubectl /usr/local/bin/kubectl
 
 jobs:
-  run-lint:
+  run-init:
     docker:
       - image: python:3.7.3-stretch
     steps:
@@ -61,20 +61,10 @@ jobs:
           command: |
             source .devops/bin/activate
             make lint
-
-  run-eks_create_cluster:
-    docker:
-      - image: python:3.7.3-stretch
-    steps:
-      - checkout
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "app/requirements.txt" }}      
       - run:
           name: Run eks create cluster
           command: |
-           chmod -R +x ./bin/eks-create-cluster
+            chmod -R +x ./bin/eks-create-cluster
             source .devops/bin/activate
             make eks-create-cluster
 
@@ -205,11 +195,9 @@ jobs:
 workflows:
   default:
     jobs:
-      - run-lint
-      - run-eks_create_cluster:
-          requires: [run-lint]
+      - run-init
       - build-and-push-docker-image:
-          requires: [run-lint]
+          requires: [run-init]
       - deploy-green:
           requires: [run-eks_create_cluster,build-and-push-docker-image]
       - wait-manual-approval:
