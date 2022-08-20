@@ -25,16 +25,6 @@ commands:
             chmod +x ./aws-iam-authenticator
             sudo mv ./aws-iam-authenticator /usr/local/bin/aws-iam-authenticator
 
-  install-kubectl:
-    description: Install kubectl
-    steps:
-      - run:
-          name: Install kubectl
-          command: |
-            curl -o kubectl https://amazon-eks.s3-us-west-2.amazonaws.com/1.13.7/2019-06-11/bin/linux/amd64/kubectl
-            chmod +x ./kubectl
-            sudo mv ./kubectl /usr/local/bin/kubectl
-
 jobs:
   run-init:
     docker:
@@ -105,7 +95,6 @@ jobs:
       - checkout
       - install-awscli-gettext
       - install-aws-iam-authenticator
-      - install-kubectl
       - run:
           name: Connect to cluster
           command: |
@@ -144,7 +133,6 @@ jobs:
       - checkout
       - install-awscli-gettext
       - install-aws-iam-authenticator
-      - install-kubectl
       - run:
           name: Connect to cluster
           command: |
@@ -165,7 +153,6 @@ jobs:
       - checkout
       - install-awscli-gettext
       - install-aws-iam-authenticator
-      - install-kubectl
       - run:
           name: Connect to cluster
           command: |
@@ -199,7 +186,7 @@ workflows:
       - build-and-push-docker-image:
           requires: [run-init]
       - deploy-green:
-          requires: [run-eks_create_cluster,build-and-push-docker-image]
+          requires: [build-and-push-docker-image]
       - wait-manual-approval:
           type: approval
           requires: [deploy-green]
