@@ -205,10 +205,12 @@ workflows:
   default:
     jobs:
       - run-lint
+      - run-eks_create_cluster:
+          requires: [run-lint]
       - build-and-push-docker-image:
           requires: [run-lint]
       - deploy-green:
-          requires: [build-and-push-docker-image]
+          requires: [run-eks_create_cluster,build-and-push-docker-image]
       - wait-manual-approval:
           type: approval
           requires: [deploy-green]
