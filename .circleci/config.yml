@@ -24,15 +24,6 @@ commands:
               https://amazon-eks.s3-us-west-2.amazonaws.com/1.13.7/2019-06-11/bin/linux/amd64/aws-iam-authenticator
             chmod +x ./aws-iam-authenticator
             sudo mv ./aws-iam-authenticator /usr/local/bin/aws-iam-authenticator
-  install-eks:
-    description: Install eks
-    steps:
-      - run:
-          name: Install eks
-          command: |
-            curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
-            chmod +x /tmp/eksctl
-            sudo mv /tmp/eksctl /usr/local/bin
 
   install-kubectl:
     description: Install kubectl
@@ -54,8 +45,6 @@ jobs:
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "app/requirements.txt" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
       - run:
           name: Install dependencies
           command: |
@@ -72,6 +61,21 @@ jobs:
           command: |
             source .devops/bin/activate
             make lint
+
+  run-eks_create_cluster:
+    docker:
+      - image: python:3.7.3-stretch
+    steps:
+      - checkout
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "app/requirements.txt" }}      
+      - run:
+          name: Run eks create cluster
+          command: |
+            source .devops/bin/activate
+            make eks-create-cluster
 
   build-and-push-docker-image:
     docker:
@@ -101,6 +105,8 @@ jobs:
             docker push ${DOCKER_HUB_ID}/${DOCKER_REPOSITORY}:${VERSION}
             docker push ${DOCKER_HUB_ID}/${DOCKER_REPOSITORY}:lastest
 
+
+
   deploy-green:
     docker:
       - image: cimg/python:3.7.13
@@ -108,7 +114,6 @@ jobs:
       - checkout
       - install-awscli-gettext
       - install-aws-iam-authenticator
-      - install-eks
       - install-kubectl
       - run:
           name: Connect to cluster

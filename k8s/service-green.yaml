@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: capstone-app-green # name modified
+  name: capstone-app-green 
 spec:
   ports:
   - port: 80

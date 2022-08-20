@@ -18,6 +18,13 @@ install:
 	    pip install -r app/requirements.txt
 	echo "Installing: hadolint..."
 	./bin/install_hadolint.sh
+	echo
+	echo "Installing: kubectl"
+	./bin/install_kubectl.sh
+	echo
+	echo "Installing: eksctl"
+	./bin/install_eksctl.sh
+
 	
 test:
 	# Additional, optional, tests could go here
@@ -43,3 +50,6 @@ run-docker: build-docker
 	
 upload-docker: build-docker
 	./bin/upload_docker.sh
+	
+eks-create-cluster:
+	./bin/eks_create_cluster.sh	

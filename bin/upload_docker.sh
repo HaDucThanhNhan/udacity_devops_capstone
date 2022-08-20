@@ -2,14 +2,21 @@
 # This file tags and uploads an image to Docker Hub
 
 # Assumes that an image is built via `run_docker.sh`
+DOCKER_HUB_ID="thanhnhan1991"
+DOCKER_REPOSITORY="capstone-app"
+VERSION="1.0"
 
-# Tag image
-docker tag capstone-app thanhnhan1991/capstone-app:1.0
-docker tag capstone-app thanhnhan1991/capstone-app:lastest
+# Step 1:
+# Create dockerpath
+# dockerpath=<your docker ID/path>
+dockerpath=${DOCKER_HUB_ID}/${DOCKER_REPOSITORY}
 
-# Login to docker-hub
-docker login --username=thanhnhan1991
+# Step 2:
+# Authenticate & tag
+echo "Docker ID and Image: $dockerpath"
+docker login -u ${DOCKER_HUB_ID} -p ${DOCKER_PASSWORD}
+docker tag ${DOCKER_REPOSITORY}:${VERSION} ${dockerpath}:${VERSION}
 
-# Push image
-docker push thanhnhan1991/capstone-app:1.0
-docker push thanhnhan1991/capstone-app:lastest
+# Step 3:
+# Push image to a docker repository
+docker push ${dockerpath}:${VERSION}

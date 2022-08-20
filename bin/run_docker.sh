@@ -1,4 +1,9 @@
 #!/usr/bin/env bash
 
-# Run capstone-app container
-docker run -d -p 80:80 --name capstone-app capstone-app
+CONTAINER_NAME="thanhnhan1991/capstone-app"
+VERSION=1.0
+CONTAINER_PORT=80
+HOST_PORT=80
+
+# Run flask app
+docker run -t --rm -p ${HOST_PORT}:${CONTAINER_PORT} ${CONTAINER_NAME}:${VERSION}
