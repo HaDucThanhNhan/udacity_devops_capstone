@@ -11,6 +11,6 @@ if kubectl config get-clusters | grep -q ${CLUSTER_NAME}; then
 else
     echo
     echo "Creating cluster..."
-    chmod -R +x ./bin/
+    chmod +x ./bin/eksctl
     ./bin/eksctl create cluster --config-file=cluster.yml
 fi
