@@ -51,11 +51,19 @@ jobs:
           command: |
             source .devops/bin/activate
             make lint
+
+  deploy-infrastructure:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
       - run:
-          name: Run eks create cluster
+          name: Ensure backend infrastructure exist
           command: |
-            source .devops/bin/activate
-            make eks-create-cluster
+            aws cloudformation deploy \
+              --template-file infra/cluster.yml \
+              --stack-name "eks-cluster-capstone" \
+              --tags project=capstone
 
   build-and-push-docker-image:
     docker:
@@ -184,6 +192,8 @@ workflows:
       - run-init
       - build-and-push-docker-image:
           requires: [run-init]
+      - deploy-infrastructure:   
+          requires: [run-init] 
       - deploy-green:
           requires: [build-and-push-docker-image]
       - wait-manual-approval:
