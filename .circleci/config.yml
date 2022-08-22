@@ -12,7 +12,7 @@ commands:
           command: |
             sudo apt update
             sudo apt-get install awscli
-            sudo apt-get install gettext-base -y
+            sudo apt-get install gettext-base
 
   install-aws-iam-authenticator:
     description: Install aws-iam-authenticator
@@ -20,45 +20,49 @@ commands:
       - run:
           name: Install aws-iam-authenticator
           command: |
-            sudo apt install curl
             curl -o aws-iam-authenticator curl -o aws-iam-authenticator \
               https://amazon-eks.s3-us-west-2.amazonaws.com/1.13.7/2019-06-11/bin/linux/amd64/aws-iam-authenticator
             chmod +x ./aws-iam-authenticator
             sudo mv ./aws-iam-authenticator /usr/local/bin/aws-iam-authenticator
 
+  install-kubectl:
+    description: Install kubectl
+    steps:
+      - run:
+          name: Install kubectl
+          command: |
+            curl -o kubectl https://amazon-eks.s3-us-west-2.amazonaws.com/1.13.7/2019-06-11/bin/linux/amd64/kubectl
+            chmod +x ./kubectl
+            sudo mv ./kubectl /usr/local/bin/kubectl
+
 jobs:
-  run-init:
+  run-lint:
     docker:
       - image: python:3.7.3-stretch
     steps:
       - checkout
-      - install-aws-iam-authenticator
       # Download and cache dependencies
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "app/requirements.txt" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
       - run:
           name: Install dependencies
           command: |
             chmod -R +x ./bin/
-            python3 -m venv .devops
-            source .devops/bin/activate
+            python3 -m venv .devops-capstone
+            source .devops-capstone/bin/activate
             make install
       - save_cache:
           paths:
-            - ./.devops
+            - ./.devops-capstone
           key: v1-dependencies-{{ checksum "app/requirements.txt" }}
       - run:
           name: Run lint
           command: |
-            source .devops/bin/activate
+            source .devops-capstone/bin/activate
             make lint
-      - run:
-          name: Run create eks 
-          command: |
-            source .devops/bin/activate
-            make eks-create-cluster
-
 
   build-and-push-docker-image:
     docker:
@@ -88,8 +92,6 @@ jobs:
             docker push ${DOCKER_HUB_ID}/${DOCKER_REPOSITORY}:${VERSION}
             docker push ${DOCKER_HUB_ID}/${DOCKER_REPOSITORY}:lastest
 
-
-
   deploy-green:
     docker:
       - image: cimg/python:3.7.13
@@ -97,6 +99,7 @@ jobs:
       - checkout
       - install-awscli-gettext
       - install-aws-iam-authenticator
+      - install-kubectl
       - run:
           name: Connect to cluster
           command: |
@@ -135,6 +138,7 @@ jobs:
       - checkout
       - install-awscli-gettext
       - install-aws-iam-authenticator
+      - install-kubectl
       - run:
           name: Connect to cluster
           command: |
@@ -155,6 +159,7 @@ jobs:
       - checkout
       - install-awscli-gettext
       - install-aws-iam-authenticator
+      - install-kubectl
       - run:
           name: Connect to cluster
           command: |
@@ -184,9 +189,9 @@ jobs:
 workflows:
   default:
     jobs:
-      - run-init
+      - run-lint
       - build-and-push-docker-image:
-          requires: [run-init]
+          requires: [run-lint]
       - deploy-green:
           requires: [build-and-push-docker-image]
       - wait-manual-approval:

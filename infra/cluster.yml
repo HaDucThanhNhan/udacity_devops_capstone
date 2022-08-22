@@ -3,7 +3,7 @@ kind: ClusterConfig
 
 metadata:
   name: production
-  region: us-west-1
+  region: us-west-2
 
 iam:
   withOIDC: true

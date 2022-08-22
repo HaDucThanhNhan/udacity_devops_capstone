@@ -1,12 +1,12 @@
 ## Hello World
 
-Capstone app
+Sample flask app
 
 <hr>
 
 ## Description
 
-Create simple capstone app hello word
+demo simple app
 
 ## Run
 
