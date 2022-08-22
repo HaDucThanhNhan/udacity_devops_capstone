@@ -31,6 +31,7 @@ jobs:
       - image: python:3.7.3-stretch
     steps:
       - checkout
+      - install-aws-iam-authenticator
       # Download and cache dependencies
       - restore_cache:
           keys:
