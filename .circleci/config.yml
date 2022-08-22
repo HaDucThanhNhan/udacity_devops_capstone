@@ -147,7 +147,10 @@ jobs:
           name: Target new version — new blue
           command: |
             export VERSION=$(<app/version.txt)
+            export DOCKER_IMAGE=${DOCKER_HUB_ID}/${DOCKER_REPOSITORY}:${VERSION}
             export LABEL_VERSION=${VERSION/./-}
+            
+            echo "DOCKER_IMAGE: $DOCKER_IMAGE"
             echo "LABEL_VERSION: $LABEL_VERSION"
             # capstone-app service target now labeled new version
             envsubst < k8s/service.yaml | kubectl apply --filename -
