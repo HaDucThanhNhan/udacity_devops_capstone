@@ -71,7 +71,8 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "requirements.txt" }}
+            - v1-dependencies-{{ checksum "app/requirements.txt" }}
+            # fallback to using the latest cache if no exact match is found
             - v1-dependencies-
       - run:
           name: Install dependencies
@@ -140,8 +141,9 @@ workflows:
       - run-lint
       - build-and-push-docker-image:
           requires: [run-lint]
+      - deploy-infrastructure:    
       - wait-manual-approval:
           type: approval
-          requires: [build-and-push-docker-image]
+          requires: [deploy-infrastructure]
       - deploy-config:
           requires: [wait-manual-approval]
