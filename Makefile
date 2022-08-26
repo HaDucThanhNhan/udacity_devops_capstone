@@ -19,17 +19,6 @@ install:
 	echo "Installing: hadolint..."
 	./bin/install_hadolint.sh
 	echo
-	echo "Installing: kubectl"
-	./bin/install_kubectl.sh
-	echo
-	echo "Installing: eksctl"
-	./bin/install_eksctl.sh
-	echo "Assume role for eks"
-	./bin/assume_role.sh
-	echo
-	echo "deploy infra for eks"
-	./bin/eks_create_cluster.sh
-	echo
 	
 test:
 	# Additional, optional, tests could go here
