@@ -154,6 +154,6 @@ workflows:
           requires: [run-lint]
       - wait-manual-approval:
           type: approval
-          requires: [dbuild-and-push-docker-image]
+          requires: [build-and-push-docker-image]
       - deploy-config:
           requires: [wait-manual-approval]
