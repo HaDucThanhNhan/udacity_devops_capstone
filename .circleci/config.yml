@@ -13,7 +13,7 @@ commands:
           command: |
             apt update
             apt-get install awscli
-            apt-get install gettext-base
+            apt-get install gettext-base -y
 
   install-aws-iam-authenticator:
     description: Install aws-iam-authenticator
