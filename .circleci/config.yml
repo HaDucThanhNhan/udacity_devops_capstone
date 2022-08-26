@@ -152,10 +152,8 @@ workflows:
       - run-lint
       - build-and-push-docker-image:
           requires: [run-lint]
-      - deploy-green:
-          requires: [build-and-push-docker-image]
       - wait-manual-approval:
           type: approval
-          requires: [deploy-green]
+          requires: [dbuild-and-push-docker-image]
       - deploy-config:
           requires: [wait-manual-approval]
