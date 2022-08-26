@@ -87,9 +87,9 @@ jobs:
           name: deploy cluster
           command: | 
             eksctl create cluster \
-            --name k8s-capstone \ 
-            --region us-west-1 \
-            --nodegroup-name k8s-capstone \
+            --name production \ 
+            --region us-west-2 \
+            --nodegroup-name production \
             --nodes 2 \
             --ssh-access \
             --ssh-public-key udapeople \
@@ -130,7 +130,7 @@ jobs:
             aws configure set region $AWS_DEFAULT_REGION
       - kubernetes/install-kubectl
       - aws-eks/update-kubeconfig-with-authenticator:
-          cluster-name: k8s-capstone
+          cluster-name: production
           install-kubectl: true
       - kubernetes/create-or-update-resource:
           resource-file-path: infra/cluster.yaml
@@ -141,7 +141,7 @@ workflows:
       - run-lint
       - build-and-push-docker-image:
           requires: [run-lint]
-      - deploy-infrastructure:    
+      - deploy-infrastructure
       - wait-manual-approval:
           type: approval
           requires: [deploy-infrastructure]

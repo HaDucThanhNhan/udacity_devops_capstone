@@ -1,35 +1,22 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
 metadata:
-  name: capstone-deployment
-  labels:
-    app: capstone-service
-spec:
-  replicas: 2
-  selector:
-    matchLabels:
-      app: capstone-service
-  template:
-    metadata:
-      labels:
-        app: capstone-service
-    spec:
-      containers:
-      - name: web
-        image: https://hub.docker.com/repository/docker/thanhnhan1991/capstone_app:latest
-        ports:
-          - name: web
-            containerPort: 80
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: service loadbalance
-spec:
-  selector:
-    app: capstone-service
-  type: LoadBalancer
-  ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 80
+  name: production
+  region: us-west-2
+
+iam:
+  withOIDC: true
+
+nodeGroups:
+  - name: capstone-app
+    instanceType: t2.small
+    amiFamily: AmazonLinux2
+    # desiredCapacity: 2
+    minSize: 2
+    maxSize: 3
+    volumeSize: 80
+    ssh:
+      allow: true
+      publicKeyName: udapeople
+
