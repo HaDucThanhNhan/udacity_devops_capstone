@@ -4,27 +4,6 @@ orbs:
   aws-eks: circleci/aws-eks@2.2.0
   kubernetes: circleci/kubernetes@1.3
 
-commands:
-  install-aws-iam-authenticator:
-    description: Install aws-iam-authenticator
-    steps:
-      - run:
-          name: Install aws-iam-authenticator
-          command: |
-            curl -o aws-iam-authenticator curl -o aws-iam-authenticator \
-              https://amazon-eks.s3-us-west-2.amazonaws.com/1.13.7/2019-06-11/bin/linux/amd64/aws-iam-authenticator
-            chmod +x ./aws-iam-authenticator
-            sudo mv ./aws-iam-authenticator /usr/local/bin/aws-iam-authenticator
-
-  install-kubectl:
-    description: Install kubectl
-    steps:
-      - run:
-          name: Install kubectl
-          command: |
-            curl -o kubectl https://amazon-eks.s3-us-west-2.amazonaws.com/1.13.7/2019-06-11/bin/linux/amd64/kubectl
-            chmod +x ./kubectl
-            sudo mv ./kubectl /usr/local/bin/kubectl
 jobs:
   run-lint:
     docker:
@@ -90,8 +69,6 @@ jobs:
       - image: python:3.11-rc-alpine
     steps:
       - checkout
-      - install-aws-iam-authenticator
-      - install-kubectl
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "app/requirements.txt" }}
@@ -101,6 +78,10 @@ jobs:
           name: Install dependencies
           command: |
             apk add --update ansible tar curl
+            curl -o aws-iam-authenticator curl -o aws-iam-authenticator \
+            https://amazon-eks.s3-us-west-2.amazonaws.com/1.13.7/2019-06-11/bin/linux/amd64/aws-iam-authenticator
+            chmod +x ./aws-iam-authenticator
+            mv ./aws-iam-authenticator /usr/local/bin/aws-iam-authenticator
             curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.18.8/2020-09-18/bin/linux/amd64/kubectl
             chmod +x ./kubectl
             curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
