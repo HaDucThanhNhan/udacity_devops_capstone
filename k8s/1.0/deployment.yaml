@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: capstone-app-1-0
+  name: flask-app-1-0
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: capstone-app
+      app: flask-app
       version: 1-0
   template:
     metadata:
       labels:
-        app: capstone-app
+        app: flask-app
         version: 1-0
     spec:
       containers:
-      - name: capstone-app
-        image: thanhnhan1991/capstone-app:1.0
+      - name: flask-app
+        image: thanhnhan1991/flask-app:1.0
         ports:
         - containerPort: 80
