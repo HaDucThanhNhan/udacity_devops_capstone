@@ -40,10 +40,12 @@ commands:
 jobs:
   run-lint:
     docker:
-      - image: python:3.7.3-stretch
+      - image: cimg/python:3.7.13
     steps:
       - checkout
-      - install-kubectl   
+      - install-awscli-gettext
+      - install-aws-iam-authenticator
+      - install-kubectl  
       # Download and cache dependencies
       - restore_cache:
           keys:
