@@ -38,7 +38,7 @@ commands:
             sudo mv ./kubectl /usr/local/bin/kubectl
 
 jobs:
-  run-lint:
+  run-lint-and-create-cluster:
     docker:
       - image: python:3.7.3-stretch
     steps:
@@ -65,6 +65,7 @@ jobs:
           command: |
             source .devops-capstone/bin/activate
             make lint
+            make eks-create-cluster
 
   build-and-push-docker-image:
     docker:
@@ -102,6 +103,7 @@ jobs:
       - install-awscli-gettext
       - install-aws-iam-authenticator
       - install-kubectl
+      
       - run:
           name: Connect to cluster
           command: |
