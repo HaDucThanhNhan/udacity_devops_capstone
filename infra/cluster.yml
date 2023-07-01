@@ -3,7 +3,7 @@ kind: ClusterConfig
 
 metadata:
   name: k8s-demo
-  region: us-east-1
+  region: us-west-2
 
 iam:
   withOIDC: true
@@ -19,4 +19,3 @@ nodeGroups:
     ssh:
       allow: true
       publicKeyName: udacity
-
