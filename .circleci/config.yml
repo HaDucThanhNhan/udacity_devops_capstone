@@ -65,12 +65,13 @@ jobs:
           command: |
             source .devops-capstone/bin/activate
             make lint
-            make eks-create-cluster
+
   run-create-cluster:
     docker:
       - image: python:3.7.3-stretch
     steps:
       - checkout
+      - install-kubectl   
       # Download and cache dependencies
       - restore_cache:
           keys:
@@ -117,8 +118,7 @@ jobs:
       - checkout
       - install-awscli-gettext
       - install-aws-iam-authenticator
-      - install-kubectl
-      
+      - install-kubectl      
       - run:
           name: Connect to cluster
           command: |
