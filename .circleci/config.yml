@@ -43,6 +43,7 @@ jobs:
       - image: python:3.7.3-stretch
     steps:
       - checkout
+      - install-kubectl   
       # Download and cache dependencies
       - restore_cache:
           keys:
@@ -65,22 +66,6 @@ jobs:
           command: |
             source .devops-capstone/bin/activate
             make lint
-
-  run-create-cluster:
-    docker:
-      - image: python:3.7.3-stretch
-    steps:
-      - checkout
-      - install-kubectl   
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "app/requirements.txt" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
-      - run:
-          name: Run create cluster
-          command: |
             make eks-create-cluster
 
   build-and-push-docker-image:
