@@ -11,18 +11,12 @@ setup:
 	python3 -m venv ~/.udacity_capstone
 	source ~/.udacity_capstone/bin/activate
 	
-install:	# TODO: Add a Docker analysis (DevSecOps)
+install:
 	# This should be run from inside a virtualenv
 	echo "Installing: dependencies..."
 	pip install --upgrade pip &&\
-	pip install -r hello_app/requirements.txt
-	# pip install "ansible-lint[community,yamllint]"
-	echo
-	pytest --version
-	# ansible --version
-	# ansible-lint --version
-	echo
-	echo "Installing: hadolint"
+	    pip install -r app/requirements.txt
+	echo "Installing: hadolint..."
 	./bin/install_hadolint.sh
 	echo
 	echo "Installing: kubectl"
