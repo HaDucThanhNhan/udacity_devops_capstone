@@ -38,7 +38,7 @@ commands:
             sudo mv ./kubectl /usr/local/bin/kubectl
 
 jobs:
-  run-lint-and-create-cluster:
+  run-lint:
     docker:
       - image: python:3.7.3-stretch
     steps:
@@ -65,6 +65,21 @@ jobs:
           command: |
             source .devops-capstone/bin/activate
             make lint
+            make eks-create-cluster
+  run-create-cluster:
+    docker:
+      - image: python:3.7.3-stretch
+    steps:
+      - checkout
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "app/requirements.txt" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+      - run:
+          name: Run create cluster
+          command: |
             make eks-create-cluster
 
   build-and-push-docker-image:
